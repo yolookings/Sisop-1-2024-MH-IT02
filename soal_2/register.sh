@@ -1,35 +1,35 @@
 #!/bin/bash
 
-# Mengenkripsi password dengan menggunakan base64
+# mengenkripsi password menggunakan base64
 enkripsi_password() {
   echo -n "$1" | base64
 }
 
-# Memeriksa apakah email sudah terdaftar
+# memeriksa apakah email sudah terdaftar
 check_email() {
   local email=$1
   grep -q "^$email:" users.txt
   return $?
 }
 
-# Untuk mendaftarkan pengguna baru
+# untuk mendaftarkan pengguna baru
 register_user() {
   local email=$1
   local username=$2
   local security_question=$3
   local security_answer=$4
   local password=$5
-  local user_type="user" # tipe user default
+  local user_type="user" # Tipe pengguna default
 
-  # Untuk memeriksa apakah ada kata admin di dalam email dan menetapkan flag admin
+  # untuk memeriksa apakah ada kata admin di dalam email dan menetapkan flag admin
   if [[ "$email" == *admin* ]]; then
     user_type="admin"
   fi
 
-  # Enkripsi password
+  # enkripsi password
   encrypted_password=$(enkripsi_password "$password")
 
-  # Memeriksa email
+  # memeriksa email
   check_email "$email"
   if [ $? -eq 0 ]; then
     echo "[ $(date +'%d/%m/%Y %H:%M:%S') ] [REGISTER FAILED] Email $email already registered." >>auth.log
@@ -41,7 +41,7 @@ register_user() {
   echo "$email:$username:$security_question:$security_answer:$encrypted_password:$user_type" >>users.txt
 
   if [[ $user_type == "admin" ]]; then
-    echo "[ $(date +'%d/%m/%Y %H:%M:%S') ] [REGISTER SUCCESS] Admin $username registered successfully." >>auth.log
+    echo "[ $(date +'%d/%m/%Y %H:%M:%S') ] [REGISTER SUCCESS] Admin $username registered succesfully." >>auth.log
     echo "Admin $username registered successfully."
   else
     echo "[ $(date +'%d/%m/%Y %H:%M:%S') ] [REGISTER SUCCESS] User $username registered successfully." >>auth.log
