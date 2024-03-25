@@ -1,4 +1,4 @@
-# Laporan Resmi Praktikum Sistem Operasi 2024 Modul - 1
+# Praktikum Sistem Operasi 2024 Modul - 1
 
 ### Anggota Kelompok IT 02 :
 
