@@ -112,6 +112,340 @@ awk '/Adriaens/ {print}' Sandbox.csv akan membaca file Sandbox.csv baris per bar
 
 ## Soal 2
 
+### `Deskripsi Soal`
+
+Oppie ingin membuat dua program, yaitu register.sh dan login.sh, untuk membantu manajemen rekrutmen peneliti untuk proyeknya tentang bom atom, yang mana kegunaan setiap programnya adalah sebagai berikut:
+
+register.sh
+Program ini bertujuan untuk melakukan registrasi bagi pengguna baru, baik itu peneliti maupun admin. Setiap pengguna harus mengisi informasi seperti email, username, pertanyaan keamanan, jawaban, dan password.
+
+login.sh
+Program ini digunakan untuk proses login, baik oleh pengguna biasa maupun admin. Pengguna diminta untuk memasukkan email dan password. Jika login berhasil, program akan memberikan akses sesuai dengan jenis pengguna (user atau admin). Jika pengguna lupa password, program memberikan opsi untuk menjawab pertanyaan keamanan yang sebelumnya disimpan selama proses registrasi.
+
+### `Penyelesaian`
+
+#### `register`
+
+```
+#!/bin/bash
+```
+
+Shebang line yang menunjukkan bahwa skrip ini akan dieksekusi menggunakan Bash.
+
+```
+enkripsi_password() {
+```
+
+Mendefinisikan fungsi enkripsi_password() untuk mengenkripsi kata sandi menggunakan base64.
+
+```
+echo -n "$1" | base64
+```
+
+Menggunakan base64 untuk mengenkripsi kata sandi yang diterima sebagai argumen.
+
+```
+check_email() {
+```
+
+Mendefinisikan fungsi check_email() untuk memeriksa apakah email sudah terdaftar.
+
+```
+local email=$1
+```
+
+Variabel lokal email digunakan untuk menyimpan email yang diterima sebagai argumen.
+
+```
+grep -q "^$email:" users.txt
+```
+
+Menggunakan grep untuk mencari apakah email sudah terdaftar dalam file users.txt.
+
+```
+return $?
+```
+
+Mengembalikan nilai dari eksekusi perintah grep yang mengindikasikan apakah email sudah terdaftar atau tidak.
+
+```
+register_user() {
+```
+
+Mendefinisikan fungsi register_user() untuk mendaftarkan pengguna baru.
+
+```
+local username=$2
+```
+
+Variabel lokal username digunakan untuk menyimpan nama pengguna yang diterima sebagai argumen.
+
+```
+local security_question=$3
+```
+
+Variabel lokal security_question digunakan untuk menyimpan pertanyaan keamanan yang diterima sebagai argumen.
+
+```
+local security_answer=$4
+```
+
+Variabel lokal security_answer digunakan untuk menyimpan jawaban pertanyaan keamanan yang diterima sebagai argumen.
+
+```
+local password=$5
+```
+
+Variabel lokal password digunakan untuk menyimpan kata sandi yang diterima sebagai argumen.
+
+```
+local user_type="user"
+```
+
+Variabel lokal user_type digunakan untuk menentukan jenis pengguna, dengan nilai default "user".
+
+```
+if [[ "$email" == *admin* ]]; then
+```
+
+Menggunakan struktur if untuk memeriksa apakah email pengguna mengandung kata "admin".
+
+```
+encrypted_password=$(enkripsi_password "$password")
+```
+
+Menggunakan fungsi enkripsi_password() untuk mengenkripsi kata sandi yang diterima.
+
+```
+check_email "$email"
+```
+
+Memanggil fungsi check_email() untuk memeriksa apakah email sudah terdaftar sebelumnya.
+
+```
+if [ $? -eq 0 ]; then
+```
+
+Memeriksa apakah fungsi check_email() mengembalikan nilai 0, menunjukkan bahwa email sudah terdaftar.
+
+```
+echo "[ $(date +'%d/%m/%Y %H:%M:%S') ] [REGISTER FAILED] Email $email already registered." >> auth.log
+```
+
+Menampilkan pesan kegagalan registrasi dan mencatatnya di file log jika email sudah terdaftar.
+
+```
+echo "[ $(date +'%d/%m/%Y %H:%M:%S') ] [REGISTER SUCCESS] User $username registered successfully." >> auth.log
+```
+
+Menampilkan pesan keberhasilan registrasi dan mencatatnya di file log jika registrasi berhasil.
+
+```
+touch users.txt
+```
+
+Membuat file users.txt jika belum ada.
+
+```
+read -p "Enter your email: " email
+```
+
+Meminta pengguna untuk memasukkan email mereka.
+
+```
+while true; do
+```
+
+Memulai loop tak terbatas untuk validasi kata sandi.
+
+```
+if [[ ${#password} -lt 8 || !("$password" =~ [[:lower:]]) || !("$password" =~ [[:upper:]]) || !("$password" =~ [0-9]) ]]; then
+```
+
+Memeriksa apakah kata sandi memenuhi persyaratan yang ditentukan.
+
+```
+break
+```
+
+Menghentikan loop jika kata sandi memenuhi persyaratan.
+
+```
+register_user "$email" "$username" "$security_question" "$security_answer" "$password"
+```
+
+Memanggil fungsi register_user() untuk mendaftarkan pengguna baru dengan informasi yang dimasukkan.
+
+#### `login`
+
+```
+#!/bin/bash
+```
+
+Shebang line yang menunjukkan bahwa skrip ini akan dieksekusi menggunakan Bash.
+
+```
+deskripsi_password() {
+```
+
+Mendefinisikan fungsi deskripsi_password() untuk mendekripsi password yang telah dienkripsi menggunakan base64.
+
+```
+echo "$1" | base64 -d
+```
+
+Menggunakan base64 untuk mendekripsi password yang diterima sebagai argumen.
+
+```
+check_credentials() {
+```
+
+Mendefinisikan fungsi check_credentials() untuk memeriksa apakah email dan password cocok.
+
+```
+local email=$1
+```
+
+Variabel lokal email digunakan untuk menyimpan email yang diterima sebagai argumen.
+
+```
+local password=$2
+```
+
+Variabel lokal password digunakan untuk menyimpan password yang diterima sebagai argumen.
+
+```
+local stored_password=$(grep "^$email:" users.txt | cut -d: -f5)
+```
+
+Mengambil password yang disimpan dari file users.txt berdasarkan email yang diberikan.
+
+```
+local is_admin=$(grep "^$email:" users.txt | cut -d: -f6)
+```
+
+Mendapatkan informasi apakah pengguna adalah admin atau tidak dari file users.txt.
+
+```
+stored_password_decrypted=$(deskripsi_password "$stored_password")
+```
+
+Mendekripsi password yang disimpan untuk membandingkannya dengan password yang dimasukkan.
+
+```
+if [ "$password" == "$stored_password_decrypted" ]; then
+```
+
+Membandingkan password yang dimasukkan dengan password yang disimpan setelah didekripsi.
+
+```
+return 0
+```
+
+Mengembalikan nilai 0 jika email dan password cocok.
+
+```
+return 1
+```
+
+Mengembalikan nilai 1 jika email dan password tidak cocok.
+
+```
+forgot_password() {
+```
+
+Mendefinisikan fungsi forgot_password() untuk mengatasi lupa password.
+
+```
+local email=$1
+```
+
+Variabel lokal email digunakan untuk menyimpan email pengguna yang lupa password.
+
+```
+local security_question=$(grep "^$email:" users.txt | cut -d: -f3)
+```
+
+Mendapatkan pertanyaan keamanan dari file users.txt berdasarkan email pengguna yang lupa password.
+
+```
+local correct_answer=$(grep "^$email:" users.txt | cut -d: -f4)
+```
+
+Mendapatkan jawaban yang benar dari file users.txt berdasarkan email pengguna yang lupa password.
+
+```
+echo "Security Question: $security_question"
+```
+
+Menampilkan pertanyaan keamanan kepada pengguna.
+
+```
+read -p "Enter your answer: " user_answer
+```
+
+Meminta pengguna untuk memasukkan jawaban mereka.
+
+```
+if [ "$user_answer" == "$correct_answer" ]; then
+```
+
+Memeriksa apakah jawaban pengguna cocok dengan jawaban yang benar.
+
+```
+local stored_password=$(grep "^$email:" users.txt | cut -d: -f5)
+```
+
+Mendapatkan password yang disimpan dari file users.txt berdasarkan email pengguna yang lupa password.
+
+```
+stored_password_decrypted=$(deskripsi_password "$stored_password")
+```
+
+Mendekripsi password yang disimpan untuk menampilkannya kepada pengguna yang lupa password.
+
+```
+echo "Your password is: $stored_password_decrypted"
+```
+
+Menampilkan password yang lupa kepada pengguna.
+
+```
+admin_menu() {
+```
+
+Mendefinisikan fungsi admin_menu() untuk menangani menu admin.
+
+```
+echo "Welcome to Login System"
+```
+
+Menampilkan pesan selamat datang ke sistem login.
+
+```
+read -p "Choose option: " option
+```
+
+Meminta pengguna untuk memilih opsi (login atau lupa password).
+
+```
+case $option in
+```
+
+Memulai struktur case untuk memproses pilihan pengguna.
+
+1): Menangani opsi 1, yaitu login.
+
+2): Menangani opsi 2, yaitu lupa password.
+
+\*): Menangani opsi lain yang tidak valid.
+
+```
+esac
+```
+
+Mengakhiri struktur case.
+
 ## Soal 3
 
 ### `Inti Soal`
