@@ -135,15 +135,20 @@ echo "$weapon" >>weapons.txt
 Ini adalah perintah untuk menambahkan nama senjata ke dalam file weapons.txt.
 
 ```
-echo "Jumlah pengguna untuk setiap senjata:"
+awk -F ',' 'NR > 1 {print $4}' 'list_character.csv' | sort | uniq -c
 ```
 
-Ini adalah perintah untuk mencetak pesan ke layar.
+menggunakan perintah awk untuk mengambil nama senjata dari file list_character.csv, mengurutkannya, dan menghitung jumlah kemunculannya.
 
 ```
-awk '{weapons[$0]++} END {for (weapon in weapons) print weapon " : " weapons[weapon]}' weapons.txt
+rm list_character.csv genshin.zip genshin_character.zip weapons.txt
+rm -rf genshin_character
 ```
 
-Ini adalah perintah untuk menghitung jumlah pengguna untuk setiap senjata berdasarkan data yang ada dalam file weapons.txt menggunakan awk.
+menggunakan perintah rm untuk menghapus file yang tidak diperlukan, yaitu list_character.csv, genshin.zip, genshin_character.zip, weapons.txt, dan direktori genshin_character.
 
 ## Soal 4
+
+```
+
+```

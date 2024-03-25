@@ -67,6 +67,8 @@ for file_path in genshin_character/*/*.jpg; do
   echo "$weapon" >>weapons.txt
 done
 
-# Menghitung jumlah pengguna untuk setiap senjata
-echo "Jumlah pengguna untuk setiap senjata:"
-awk '{weapons[$0]++} END {for (weapon in weapons) print weapon " : " weapons[weapon]}' weapons.txt
+awk -F ',' 'NR > 1 {print $4}' 'list_character.csv' | sort | uniq -c
+
+# Menghapus file yang tidak diperlukan
+rm list_character.csv genshin.zip genshin_character.zip weapons.txt
+rm -rf genshin_character
