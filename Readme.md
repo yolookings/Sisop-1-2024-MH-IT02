@@ -110,6 +110,8 @@ awk '/Adriaens/ {print}' Sandbox.csv
 
 awk '/Adriaens/ {print}' Sandbox.csv akan membaca file Sandbox.csv baris per baris, dan mencetak setiap baris yang mengandung string "Adriaens" ke output standar (layar/terminal).
 
+### `Dokumentasi Soal`
+
 ## Soal 2
 
 ### `Deskripsi Soal`
@@ -446,9 +448,11 @@ esac
 
 Mengakhiri struktur case.
 
+### `Dokumentasi Soal`
+
 ## Soal 3
 
-### `Inti Soal`
+### `Deskripsi Soal`
 
 Soal tersebut menggambarkan tentang seorang gamer bernama Alyss yang ingin mengumpulkan foto-foto karakter dari game Genshin Impact. Dia mendapatkan sebuah link dari temannya, Yanuar, yang berisi kumpulan foto karakter serta sebuah clue yang mengarah pada penemuan gambar rahasia. Setiap nama file dalam link tersebut telah dienkripsi menggunakan hexadecimal. Alyss ingin mendownload file-file tersebut, mendekode nama file yang terenkripsi, dan merename file sesuai dengan data karakter yang terdapat dalam file CSV list_character.csv. Alyss juga ingin mengelompokkan file-file karakter ke dalam folder berdasarkan region karakternya. Selain itu, Alyss ingin menghitung jumlah pengguna untuk setiap senjata yang ada di folder genshin_character.
 
@@ -581,8 +585,67 @@ rm -rf genshin_character
 
 menggunakan perintah rm untuk menghapus file yang tidak diperlukan, yaitu list_character.csv, genshin.zip, genshin_character.zip, weapons.txt, dan direktori genshin_character.
 
+### `Dokumentasi Soal`
+
+![output dari file awal.sh](dokum/output-genshin.png)
+
+- output dari soal file awal.sh saat dijalankan
+
+![Daftar folder](dokum/folder.png)
+
+- berikut adalah daftar folder saat file awal.sh sudah di jalankan
+
 ## Soal 4
 
-```
+# `Revisi`
+
+## `Revisi untuk nomor 3`
+
+Pada nomor 3 , berkaitan dengan revisi untuk file `search.sh` dimana file tersebut masih dalam proses pengerjaan, yang kemudian juga telah dilakukan revisi seperti berikut:
 
 ```
+#!/bin/bash
+
+# Fungsi untuk mencatat log
+log() {
+  echo "[$(date +'%d/%m/%y %H:%M:%S')] [$1] [$2]" >>image.log
+}
+
+# Loop untuk memeriksa setiap gambar dalam folder genshin_character
+for image_path in genshin_character/*.jpg; do
+  log "INFO" "Mengecek $image_path"
+  # Ekstrak nilai dari gambar menggunakan steghide
+  steghide extract -sf "$image_path" -p "" -xf extracted.txt >/dev/null 2>&1
+
+  # Cek apakah nilai berhasil diekstrak
+  if [ -f "extracted.txt" ]; then
+    # Baca isi file yang diekstrak
+    secret=$(cat extracted.txt)
+    # Hapus file teks yang diekstrak
+    rm extracted.txt
+    # Dekripsi isi teks dari heksadesimal
+    decrypted=$(printf "%b" "$secret")
+    # Cek apakah isi teks mengandung URL yang dicari
+    if [[ $decrypted == *"https://"* ]]; then
+      log "FOUND" "$image_path"
+      # Unduh file berdasarkan URL
+      curl -O "$decrypted"
+      exit 0
+    else
+      log "INFO" "Isi teks: $decrypted"
+    fi
+  else
+    log "NOT FOUND" "$image_path"
+  fi
+done
+
+rm weapons.txt
+rm -rf genshin_character
+
+```
+
+pada kode `search.sh` telah berhasil dijalankan dengan menampilkan output yang dihasilkan berupa "not found"
+
+![Daftar folder](dokum/log.png)
+
+sekian dan terimakasih.

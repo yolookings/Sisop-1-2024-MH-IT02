@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Download file zip
 CSV_URL='https://drive.usercontent.google.com/u/0/uc?id=1oGHdTf4_76_RacfmQIV4i7os4sGwa9vN&export=download'
 curl -L -o genshin.zip "$CSV_URL"
@@ -62,13 +61,14 @@ for file_path in genshin_character/*; do
 done
 
 echo "Menghitung jumlah pengguna untuk setiap senjata..."
+# Mendapatkan senjata dari setiap file karakter dan menyimpannya ke file sementara
 for file_path in genshin_character/*/*.jpg; do
   weapon=$(basename "$file_path" | cut -d' ' -f4)
-  echo "$weapon" >>weapons.txt
-done
+  echo "$weapon"
+done >>weapons.txt
 
-awk -F ',' 'NR > 1 {print $4}' 'list_character.csv' | sort | uniq -c
+# Menghitung jumlah pengguna untuk setiap senjata dari file CSV dan menampilkan hasilnya
+# grep bertujuan meghilangkan filter senjata
+cut -d',' -f4 'list_character.csv' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "Senjata" | sort | uniq -c | awk '{print $2 " : " $1}'
 
-# Menghapus file yang tidak diperlukan
-rm list_character.csv genshin.zip genshin_character.zip weapons.txt
-rm -rf genshin_character
+rm genshin_character.zip genshin.zip list_character.csv
