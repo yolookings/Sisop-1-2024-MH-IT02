@@ -616,11 +616,11 @@ Dengan begitu, kode tersebut menjelaskan proses pengunduhan, ekstraksi, dan pemr
 
 ### `Dokumentasi Soal nomor 3`
 
-![output dari file awal.sh](dokum/output-genshin.png)
+-gambar
 
 - output dari soal file awal.sh saat dijalankan
 
-![Daftar folder](dokum/folder.png)
+-ganbar
 
 - berikut adalah daftar folder saat file awal.sh sudah di jalankan
 
@@ -671,12 +671,10 @@ rm -rf genshin_character
 
 pada kode `search.sh` telah berhasil dijalankan dengan menampilkan output yang dihasilkan berupa "not found"
 
-![Daftar folder](dokum/log.png)
+-gambar
 
 sekian dan terimakasih.
 
 ## Soal 4
-
-# `Revisi`
 
 
