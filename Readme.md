@@ -679,4 +679,37 @@ sekian dan terimakasih.
 
 ## Soal 4
 
+# `Revisi`
+## Penjelasan Soal
+Dalam soal ini kita diminta untuk membuat sebuah script bernama minute_log.sh untuk mencatat metrics tiap menit dan buat outputnya dengan format metrics_{YmdHms}.log di directory log. Setelah itu, buat script bernama aggregate_minutes_to_hourly_log.sh untuk mengagregasi file log ke satuan jam dengan output berformat metrics_agg_{YmdH}.log.
+
+# A
+Kita diminta untuk membuat sebuah script bernama minute_log.sh dan output bernama metrics_{YmdHms}.log berisi data metrics yang diambil dari free -m untuk menghitung memory dan du -sh /home/{user}/ untuk menghitung size directory.
+. Data hasil free - m dan du -sh
+## mengambil data memory dan size directory
+```
+memory=$(free -m | awk '/^Mem/ {print $2","$3","$4","$5","$6","$7}')
+swap=$(free -m | awk '/^Swap/ {print $2","$3","$4}')
+```
+Command diatas digunakan untuk mengambil data dari free -m yang berisi data dari memory komputer. Awk menggunakan pipe untuk mengambil data dari free -m, dan '^Mem' akan membaca baris yang memiliki kata-kata "Mem", begitu juga dengan "^Swap". Tanda Dollar digunakan untuk menentukan data mana yang akan di ambil berdasarkan kolom. Misalkan kita mengetik "$2", maka script akan mengambil data dari kolom 2. Data tersebut kemudian di masukkan ke dalam variabel yang bernama "memory" dan "swap".
+```
+path=$(du -sh /home/{user}/ | awk '{print $2","$1}')
+namafile="metrics_$(date +"%Y%m%d%I%M%S").log"
+```
+Command diatas berguna untuk mengambil ukuran dari directory yang ditentukan. Awk akan menggunakan pipe untuk mengambil data dari du -sh dan print kolom ke 2 dan ke 1. Kemudian data tersebut akan dimasukkan ke variabel "path". Selanjutnya adalah menentukan tujuan dari output script ini. Seperti format yang diminta di soal, file output dari script ini bernama "metrics_{YmdHms}.log" yang berisi Year(%Y), Month(%m), Date(%d), Hour(%I), Minute(M), dan Seconds(%S). Disini menggunakan Date Command untuk menanmpilkan format waktu. Selanjutya adalah memasukkan format file terebut ke dalam variabel yang bernama "namafile".
+# Mengatur output
+```
+echo "$memory,$swap,$path" >> /home/{user}/log/$namafile
+echo "$memory,$swap,$path" >> /home/{user}/log/temporary.txt
+```
+Script ini akan mengeprint atau mengecho variabel "memory", "swap", dan "path", kemudian akan disimpan di directory /home/{user}/log/ dengan format nama sesuai dengan variabel "namafile". Selanjutnya output ini juga akan ter-echo ke file txt yang bernama "temporary.txt" yang nanti akan digunakan untuk aggregat setiap menit di soal selanjutnya. 
+. Screenshot hasil output script "minute_log.sh"
+# B
+Pada soal ini, kita diminta untuk dapat menjalankan script minute_log.sh tersebut secara otomatis setiap menit. Di sini kita akan menggunakan cronjob untuk membuat script ini berjalan setiap menit.
+
+# C
+Di soal ini kita diminta untuk mengambil data dari semua log metrics yang telah dibuat oleh "minute_log.sh"  dan mengolah datanya untuk mendapat rata-rata, minimum, dan maximum dari seluruh metrics yang dibuat satu jam sebelumnya. Script ini diminta untuk berjalan secara otomatis setiap jam, dan akan disimpan di direktori log dengan format "metrics_agg_{YmdH}.log".
+
+# D
+Terakhir, kita diminta untuk mengganti perizinan dan pemilik dari semua file log agar hanya user yang dapat membaca file log tersebut.
 
