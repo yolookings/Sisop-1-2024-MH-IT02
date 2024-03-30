@@ -112,6 +112,8 @@ awk '/Adriaens/ {print}' Sandbox.csv akan membaca file Sandbox.csv baris per bar
 
 ### `Dokumentasi Soal`
 
+![soal 1](https://github.com/yolookings/Sisop-1-2024-MH-IT02/assets/147925317/45f656dc-2b50-4f66-9932-46c29a4ab190)
+
 ## Soal 2
 
 ### `Deskripsi Soal`
