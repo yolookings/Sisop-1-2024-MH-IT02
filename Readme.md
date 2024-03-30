@@ -454,6 +454,37 @@ Mengakhiri struktur case.
 
 - output saat menjalankan file register.sh dan login.sh
 
+
+## `Revisi untuk nomor 2`
+
+Kendala yang terjadi saat demo adalah tidak bisa menampilkan menu admin, sehingga diperlukan revisi untuk memperbaiki kode pada file login.sh
+
+```
+ check_credentials "$email" "$password"
+        if [ $? -eq 0 ]; then
+            echo "[ $(date +'%d/%m/%Y %H:%M:%S') ] [LOGIN SUCCESS] U>
+
+            is_admin=$(grep "^$email:" users.txt | cut -d: -f6)
+            if [ "$is_admin" == "admin" ]; then
+                admin_menu     #Bagian yang diubah, sebelumnya adalah admin_actions
+            else
+                echo "Login successful!"
+                echo "You don't have admin privileges. Welcome!"
+            fi
+        else
+            echo "[ $(date +'%d/%m/%Y %H:%M:%S') ] [LOGIN FAILED] ER>
+            echo "ERROR: Incorrect password."
+            read -p "Forgot Password? (y/n): " choice
+            if [ "$choice" == "y" ]; then
+                forgot_password "$email"
+            fi
+        fi
+        ;;
+```
+
+Kendala terjadi karena kesalahan saat menuliskan fungsi yang seharusnya 'admin_menu', namun yang tertulis adalah 'admin_actions'.
+
+
 ## Soal 3
 
 ### `Deskripsi Soal`
@@ -593,39 +624,6 @@ Dengan begitu, kode tersebut menjelaskan proses pengunduhan, ekstraksi, dan pemr
 
 - berikut adalah daftar folder saat file awal.sh sudah di jalankan
 
-## Soal 4
-
-# `Revisi`
-
-## `Revisi untuk nomor 2`
-
-Kendala yang terjadi saat demo adalah tidak bisa menampilkan menu admin, sehingga diperlukan revisi untuk memperbaiki kode pada file login.sh
-
-```
- check_credentials "$email" "$password"
-        if [ $? -eq 0 ]; then
-            echo "[ $(date +'%d/%m/%Y %H:%M:%S') ] [LOGIN SUCCESS] U>
-
-            is_admin=$(grep "^$email:" users.txt | cut -d: -f6)
-            if [ "$is_admin" == "admin" ]; then
-                admin_menu     #Bagian yang diubah, sebelumnya adalah admin_actions
-            else
-                echo "Login successful!"
-                echo "You don't have admin privileges. Welcome!"
-            fi
-        else
-            echo "[ $(date +'%d/%m/%Y %H:%M:%S') ] [LOGIN FAILED] ER>
-            echo "ERROR: Incorrect password."
-            read -p "Forgot Password? (y/n): " choice
-            if [ "$choice" == "y" ]; then
-                forgot_password "$email"
-            fi
-        fi
-        ;;
-```
-
-Kendala terjadi karena kesalahan saat menuliskan fungsi yang seharusnya 'admin_menu', namun yang tertulis adalah 'admin_actions'.
-
 ## `Revisi untuk nomor 3`
 
 Pada nomor 3 , berkaitan dengan revisi untuk file `search.sh` dimana file tersebut masih dalam proses pengerjaan, yang kemudian juga telah dilakukan revisi seperti berikut:
@@ -676,3 +674,9 @@ pada kode `search.sh` telah berhasil dijalankan dengan menampilkan output yang d
 ![Daftar folder](dokum/log.png)
 
 sekian dan terimakasih.
+
+## Soal 4
+
+# `Revisi`
+
+
