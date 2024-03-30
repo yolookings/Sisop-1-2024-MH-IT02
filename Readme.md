@@ -616,11 +616,13 @@ Dengan begitu, kode tersebut menjelaskan proses pengunduhan, ekstraksi, dan pemr
 
 ### `Dokumentasi Soal nomor 3`
 
--gambar
+<img width="469" alt="run awal" src="https://github.com/yolookings/Sisop-1-2024-MH-IT02/assets/147925317/a629ba68-d347-4cf5-9f77-c72e553404fe">
+
 
 - output dari soal file awal.sh saat dijalankan
 
--ganbar
+<img width="304" alt="daftar file" src="https://github.com/yolookings/Sisop-1-2024-MH-IT02/assets/147925317/9c58e27d-087c-4b59-a738-f055a5aee417">
+
 
 - berikut adalah daftar folder saat file awal.sh sudah di jalankan
 
@@ -671,7 +673,7 @@ rm -rf genshin_character
 
 pada kode `search.sh` telah berhasil dijalankan dengan menampilkan output yang dihasilkan berupa "not found"
 
--gambar
+<img width="651" alt="output" src="https://github.com/yolookings/Sisop-1-2024-MH-IT02/assets/147925317/40cb4344-5cb5-4176-8b5f-a0afa5172cd8">
 
 sekian dan terimakasih.
 
