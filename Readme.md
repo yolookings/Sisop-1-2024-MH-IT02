@@ -599,7 +599,7 @@ Dengan begitu, kode tersebut menjelaskan proses pengunduhan, ekstraksi, dan pemr
 
 ## `Revisi untuk nomor 2`
 
-Kendala yang terjadi saat demo adalah tidak bisa menampilkan menu admin, sehingga diperlukan revisi untuk memperbaiki kode pada skrip login.sh
+Kendala yang terjadi saat demo adalah tidak bisa menampilkan menu admin, sehingga diperlukan revisi untuk memperbaiki kode pada file login.sh
 
 ```
  check_credentials "$email" "$password"
@@ -624,7 +624,7 @@ Kendala yang terjadi saat demo adalah tidak bisa menampilkan menu admin, sehingg
         ;;
 ```
 
-Kesalahan terjadi karena kesalahan saat menuliskan fungsi yang seharusnya 'admin_menu', namun yang tertulis adalah 'admin_actions'.
+Kendala terjadi karena kesalahan saat menuliskan fungsi yang seharusnya 'admin_menu', namun yang tertulis adalah 'admin_actions'.
 
 ## `Revisi untuk nomor 3`
 
