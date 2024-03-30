@@ -33,5 +33,5 @@ for image_path in genshin_character/*.jpg; do
   fi
 done
 
-rm weapons.txt
+rm weapons.txt image.log
 rm -rf genshin_character
