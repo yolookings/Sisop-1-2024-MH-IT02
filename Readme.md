@@ -688,6 +688,10 @@ Dalam soal ini kita diminta untuk membuat sebuah script bernama minute_log.sh un
 # A
 Kita diminta untuk membuat sebuah script bernama minute_log.sh dan output bernama metrics_{YmdHms}.log berisi data metrics yang diambil dari free -m untuk menghitung memory dan du -sh /home/{user}/ untuk menghitung size directory.
 . Data hasil free - m dan du -sh
+
+![no 4 pertama](https://github.com/yolookings/Sisop-1-2024-MH-IT02/assets/147925317/3a74ded8-daf5-454c-a2fa-150e0044c67f)
+
+
 ## mengambil data memory dan size directory
 ```
 memory=$(free -m | awk '/^Mem/ {print $2","$3","$4","$5","$6","$7}')
@@ -706,6 +710,9 @@ echo "$memory,$swap,$path" >> /home/{user}/log/temporary.txt
 ```
 Script ini akan mengeprint atau mengecho variabel "memory", "swap", dan "path", kemudian akan disimpan di directory /home/{user}/log/ dengan format nama sesuai dengan variabel "namafile". Selanjutnya output ini juga akan ter-echo ke file txt yang bernama "temporary.txt" yang nanti akan digunakan untuk aggregat setiap menit di soal selanjutnya. 
 . Screenshot hasil output script "minute_log.sh"
+
+![no 4 kedua](https://github.com/yolookings/Sisop-1-2024-MH-IT02/assets/147925317/0a4156bf-4cfe-43e7-b731-760196e79f1e)
+
 # B
 Pada soal ini, kita diminta untuk dapat menjalankan script minute_log.sh tersebut secara otomatis setiap menit. Di sini kita akan menggunakan cronjob untuk membuat script ini berjalan setiap menit.
 
