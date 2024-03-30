@@ -459,133 +459,127 @@ Soal tersebut menggambarkan tentang seorang gamer bernama Alyss yang ingin mengu
 ### `Penyelesaian`
 
 ```
-#!/bin/bash:
-```
-
-Ini adalah shebang line yang memberi tahu sistem operasi bahwa script ini adalah script bash dan harus dijalankan menggunakan bash shell.
-
-```
+#!/bin/bash
+# Download file zip
 CSV_URL='https://drive.usercontent.google.com/u/0/uc?id=1oGHdTf4_76_RacfmQIV4i7os4sGwa9vN&export=download'
-```
-
-Ini adalah variabel yang berisi URL dari file zip yang akan diunduh.
-
-```
 curl -L -o genshin.zip "$CSV_URL"
-```
 
-Ini adalah perintah untuk mengunduh file zip dari URL yang disimpan dalam variabel CSV_URL dan menyimpannya dengan nama genshin.zip. -L digunakan untuk mengikuti redirect jika ada, dan -o digunakan untuk menentukan nama file output.
-
-```
 unzip genshin.zip
-```
 
-Ini adalah perintah untuk mengekstrak isi dari file zip yang telah diunduh.
-
-```
 unzip genshin_character.zip
+
+# Fungsi untuk mendapatkan nama karakter dari file CSV
+get_character_name() {
+  while IFS=, read -r nama region element senjata; do
+    if [[ "$1" == "$nama" ]]; then
+      echo "$region - $nama - $element - $senjata"
+      return
+    fi
+  done <list_character.csv
+}
+
+# Memproses setiap file dalam folder genshin_character
+for file_path in genshin_character/*; do
+  if [ -f "$file_path" ]; then
+    # Mendapatkan nama file tanpa path
+    file_name=$(basename "$file_path")
+
+    # Print debug info
+    echo "Processing file: $file_name"
+
+    # Mendekode nama file dari hexadecimal
+    nama_karakter=$(echo "$file_name" | xxd -r -p)
+
+    # Print debug info
+    echo "Decoded character name: $nama_karakter"
+
+    # Mendapatkan nama karakter dari nama file yang telah didekode
+    character_name=$(get_character_name "$nama_karakter")
+
+    if [ -n "$character_name" ]; then
+      # Membuat nama baru
+      new_name="$character_name.jpg"
+
+      # Mendapatkan region dari nama karakter
+      region=$(echo "$character_name" | cut -d' ' -f1)
+
+      # Menyiapkan path folder region
+      region_folder="genshin_character/$region"
+
+      # Membuat folder region jika belum ada
+      mkdir -p "$region_folder"
+
+      # Menyiapkan path file baru
+      new_path="$region_folder/$new_name"
+
+      # Merubah nama file dan memindahkannya ke folder region
+      mv "$file_path" "$new_path"
+      echo "File $file_name berhasil direname dan dipindahkan ke $region_folder."
+    else
+      echo "Tidak dapat menemukan informasi karakter untuk file $file_name."
+    fi
+  fi
+done
+
+echo "Menghitung jumlah pengguna untuk setiap senjata..."
+# Mendapatkan senjata dari setiap file karakter dan menyimpannya ke file sementara
+for file_path in genshin_character/*/*.jpg; do
+  weapon=$(basename "$file_path" | cut -d' ' -f4)
+  echo "$weapon"
+done >>weapons.txt
+
+# Menghitung jumlah pengguna untuk setiap senjata dari file CSV dan menampilkan hasilnya
+# grep bertujuan meghilangkan filter senjata
+cut -d',' -f4 'list_character.csv' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v "Senjata" | sort | uniq -c | awk '{print $2 " : " $1}'
+
+rm genshin_character.zip genshin.zip list_character.csv
 ```
 
-Ini adalah perintah untuk mengekstrak isi dari file zip genshin_character.zip.
+Shebang line #!/bin/bash digunakan untuk menandai bahwa skrip ini harus dijalankan dengan menggunakan shell bash.
 
-```
-get_character_name() { ... }
-```
+Variabel CSV_URL menyimpan URL dari file zip yang akan diunduh.
 
-Ini adalah definisi fungsi Bash yang bernama get_character_name. Fungsi ini membaca file CSV list_character.csv dan mencocokkan nama karakter yang diberikan dengan baris yang sesuai dalam file CSV untuk mendapatkan informasi karakter tersebut.
+Perintah curl -L -o genshin.zip "$CSV_URL" digunakan untuk mengunduh file zip dari URL yang disimpan dalam variabel CSV_URL dan menyimpannya dengan nama genshin.zip. Flag -L digunakan untuk mengikuti redirect jika ada, sedangkan -o digunakan untuk menentukan nama file output.
 
-```
-for file_path in genshin_character/\*; do ... done
-```
+Perintah unzip genshin.zip digunakan untuk mengekstrak isi dari file zip yang telah diunduh.
 
-Ini adalah loop yang akan melakukan iterasi pada setiap file dalam folder genshin_character.
+Perintah unzip genshin_character.zip digunakan untuk mengekstrak isi dari file zip genshin_character.zip.
 
-```
-if [ -f "$file_path" ]; then ... fi
-```
+Fungsi Bash get_character_name() mendefinisikan suatu fungsi yang membaca file CSV list_character.csv dan mencocokkan nama karakter yang diberikan dengan baris yang sesuai dalam file CSV untuk mendapatkan informasi karakter tersebut.
 
-Ini adalah kondisional yang memeriksa apakah file yang sedang diproses adalah file regular atau bukan.
+Loop for file_path in genshin_character/\* melakukan iterasi pada setiap file dalam folder genshin_character.
 
-```
-file_name=$(basename "$file_path")
-```
+Kondisional if [ -f "$file_path" ] memeriksa apakah file yang sedang diproses adalah file regular atau bukan.
 
-Ini adalah perintah untuk mendapatkan nama file dari path lengkap file tersebut.
+Perintah file_name=$(basename "$file_path") digunakan untuk mendapatkan nama file dari path lengkap file tersebut.
 
-```
-nama_karakter=$(echo "$file_name" | xxd -r -p)
-```
+Perintah nama_karakter=$(echo "$file_name" | xxd -r -p) digunakan untuk mendekode nama karakter dari representasi hexadecimal menggunakan perintah xxd.
 
-Ini adalah perintah untuk mendekode nama karakter dari representasi hexadecimal menggunakan perintah xxd.
+Pemanggilan fungsi get_character_name "$nama_karakter" digunakan untuk mendapatkan informasi karakter berdasarkan nama karakter yang sudah didekode.
 
-```
-character_name=$(get_character_name "$nama_karakter")
-```
+Kondisional if [ -n "$character_name" ] memeriksa apakah informasi karakter ditemukan atau tidak.
 
-Ini adalah pemanggilan fungsi get_character_name untuk mendapatkan informasi karakter berdasarkan nama karakter yang sudah didekode.
+Perintah new_name="$character_name.jpg" digunakan untuk membuat nama baru untuk file karakter dengan menambahkan ekstensi .jpg.
 
-```
-if [ -n "$character_name" ]; then ... fi
-```
+Perintah region=$(echo "$character_name" | cut -d' ' -f1) digunakan untuk mendapatkan region karakter dari nama karakter yang sudah didekode.
 
-Ini adalah kondisional untuk memeriksa apakah informasi karakter ditemukan atau tidak.
+Perintah mkdir -p "$region_folder" digunakan untuk membuat folder berdasarkan region karakter jika belum ada.
 
-```
-new_name="$character_name.jpg"
-```
+Perintah mv "$file_path" "$new_path" digunakan untuk merename dan memindahkan file karakter ke folder yang sesuai.
 
-Ini adalah perintah untuk membuat nama baru untuk file karakter dengan menambahkan ekstensi .jpg.
+Loop for file*path in genshin_character/*/\_.jpg melakukan iterasi pada setiap file gambar karakter di dalam subfolder genshin_character.
 
-```
-region=$(echo "$character_name" | cut -d' ' -f1)
-```
+Perintah weapon=$(basename "$file_path" | cut -d' ' -f4) digunakan untuk mendapatkan nama senjata dari nama file gambar karakter.
 
-Ini adalah perintah untuk mendapatkan region karakter dari nama karakter yang sudah didekode.
+Perintah echo "$weapon" >> weapons.txt digunakan untuk menambahkan nama senjata ke dalam file weapons.txt.
 
-```
-mkdir -p "$region_folder"
-```
+Perintah awk -F ',' 'NR > 1 {print $4}' 'list_character.csv' | sort | uniq -c menggunakan perintah awk untuk mengambil nama senjata dari file list_character.csv, mengurutkannya, dan menghitung jumlah kemunculannya.
 
-Ini adalah perintah untuk membuat folder berdasarkan region karakter jika belum ada.
+Perintah rm list_character.csv genshin.zip genshin_character.zip weapons.txt digunakan untuk menghapus file yang tidak diperlukan, yaitu list_character.csv, genshin.zip, genshin_character.zip, weapons.txt, dan direktori genshin_character.
 
-```
-mv "$file_path" "$new_path"
-```
+Dengan begitu, kode tersebut menjelaskan proses pengunduhan, ekstraksi, dan pemrosesan data Genshin Impact melalui bash script.
 
-Ini adalah perintah untuk merename dan memindahkan file karakter ke folder yang sesuai.
-
-```
-for file*path in genshin_character/*/\_.jpg; do ... done
-```
-
-Ini adalah loop yang akan melakukan iterasi pada setiap file gambar karakter di dalam subfolder genshin_character.
-
-```
-weapon=$(basename "$file_path" | cut -d' ' -f4)
-```
-
-Ini adalah perintah untuk mendapatkan nama senjata dari nama file gambar karakter.
-
-```
-echo "$weapon" >>weapons.txt
-```
-
-Ini adalah perintah untuk menambahkan nama senjata ke dalam file weapons.txt.
-
-```
-awk -F ',' 'NR > 1 {print $4}' 'list_character.csv' | sort | uniq -c
-```
-
-menggunakan perintah awk untuk mengambil nama senjata dari file list_character.csv, mengurutkannya, dan menghitung jumlah kemunculannya.
-
-```
-rm list_character.csv genshin.zip genshin_character.zip weapons.txt
-rm -rf genshin_character
-```
-
-menggunakan perintah rm untuk menghapus file yang tidak diperlukan, yaitu list_character.csv, genshin.zip, genshin_character.zip, weapons.txt, dan direktori genshin_character.
-
-### `Dokumentasi Soal`
+### `Dokumentasi Soal nomor 3`
 
 ![output dari file awal.sh](dokum/output-genshin.png)
 
